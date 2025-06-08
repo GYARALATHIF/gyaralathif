@@ -1,0 +1,300 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lathif - Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1>Portfolio</h1>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#awards">Awards</a></li>
+        <li><a href="#hobbies">Hobbies</a></li>
+        <li><a href="#social-media">Social Media</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="home" class="hero-section">
+    <div class="hero-wrapper container">
+      <div class="hero-text">
+        <h2>Hello, I’m <span class="highlight">Lathif</span></h2>
+        <p>A Web Developer & UI/UX Designer</p>
+        <a href="#contact" class="btn">Get in Touch</a>
+      </div>
+      <div class="hero-img">
+        <img src="images/profile.jpg" alt="Lathif's Profile Image" class="profile-large" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section about-section">
+    <div class="container">
+      <h2>About Me</h2>
+      <div class="about-content">
+        <p>I’m passionate about crafting elegant, responsive web interfaces and intelligent applications, blending design-focused development with data-driven innovation.</p>
+        <p>At Web Blinders, I collaborated with senior developers to enhance user experiences through seamless UI improvements, which inspired me to build a To-Do List App—a simple yet effective task management tool allowing users to add, edit, and delete tasks with an intuitive interface.</p>
+        <p>With expertise in JavaScript, Python, HTML, CSS, SQL, and a strong foundation in data structures and algorithms, I follow a modular approach to deliver clean, scalable code. Currently pursuing a B.Tech in AI & Machine Learning, I’m excited to create user-friendly, intelligent experiences where AI meets Front-End development.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="section experience-section">
+    <div class="container">
+      <h2>Experience</h2>
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="tab1">Android App Development Intern</button>
+        <button class="tab-btn" data-tab="tab2">Web Development Intern</button>
+      </div>
+      <div id="tab1" class="tab-content active">
+        <h3>Android App Development Intern</h3>
+        <p>Developed an Android app prototype for a ride-share application, focusing on user-friendly design. Utilized Java and Android Studio to create an intuitive interface for ride booking.</p>
+      </div>
+      <div id="tab2" class="tab-content">
+        <h3>Web Development Intern at Web Blinders</h3>
+        <p>Interned as a web developer at Web Blinders, collaborating with senior developers to build responsive user interfaces and enhance application functionality. Improved website load times by optimizing CSS and JavaScript code.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="section education-section">
+    <div class="container">
+      <h2>Education</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3>B.Tech</h3>
+            <p>G Pulla Reddy Engineering College</p>
+            <p>GPA: 7.7 | Year: 2026</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3>Intermediate</h3>
+            <p>Narayana Junior College</p>
+            <p>GPA: 8.7 | Year: 2022</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3>10th</h3>
+            <p>Good Shepherd E/M High School</p>
+            <p>GPA: 9.7 | Year: 2020</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="section skills-section">
+    <div class="container">
+      <h2>Skills</h2>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <h3>HTML</h3>
+          <div class="bar"><span style="width: 90%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>CSS</h3>
+          <div class="bar"><span style="width: 85%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>JavaScript</h3>
+          <div class="bar"><span style="width: 80%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>UI/UX Design</h3>
+          <div class="bar"><span style="width: 75%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>Java</h3>
+          <div class="bar"><span style="width: 70%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>Graphic Designer</h3>
+          <div class="bar"><span style="width: 65%;"></span></div>
+        </div>
+        <div class="skill-card">
+          <h3>Web Developer</h3>
+          <div class="bar"><span style="width: 80%;"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section projects-section">
+    <div class="container">
+      <h2>Projects</h2>
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>Portfolio Website</h3>
+          <p>A responsive portfolio website built using HTML, CSS, and JavaScript to showcase personal and academic projects.</p>
+          <p>Technologies: HTML, CSS, JavaScript</p>
+        </div>
+        <div class="project-card">
+          <h3>To-Do List App</h3>
+          <p>A simple application to manage tasks, allowing users to add, edit, and delete to-do items.</p>
+          <p>Technologies: HTML, CSS, JavaScript</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="certifications" class="section certifications-section">
+    <div class="container">
+      <h2>Certifications</h2>
+      <div class="certification-grid">
+        <div class="certification-card">
+          <h3>Introduction to Internet of Things</h3>
+          <p>Completed a course on IoT fundamentals and applications.</p>
+          <p>Year: 2025</p>
+        </div>
+        <div class="certification-card">
+          <h3>Cloud Computing</h3>
+          <p>Completed a course on cloud computing concepts and technologies.</p>
+          <p>Year: 2025</p>
+        </div>
+        <div class="certification-card">
+          <h3>Introduction to Industry 4.0 and Industrial Internet of Things</h3>
+          <p>Completed a course on Industry 4.0 and IIoT principles.</p>
+          <p>Year: 2025</p>
+        </div>
+        <div class="certification-card">
+          <h3>Frontend Development Certification</h3>
+          <p>Completed a comprehensive course on frontend development from Coursera.</p>
+          <p>Year: 2024</p>
+        </div>
+        <div class="certification-card">
+          <h3>UI/UX Design Specialization</h3>
+          <p>Earned a specialization certificate from Udemy focusing on UI/UX design principles.</p>
+          <p>Year: 2023</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="awards" class="section awards-section">
+    <div class="container">
+      <h2>Awards & Recognition</h2>
+      <div class="awards-grid">
+        <div class="award-card">
+          <div class="award-icon">🏆</div>
+          <h3>College Short Film Competition, 2nd Place</h3>
+          <p>Secured 2nd place in a college-level short film competition.</p>
+          <p>Year: 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hobbies" class="section hobbies-section">
+    <div class="container">
+      <h2>Hobbies & Interests</h2>
+      <div class="hobbies-grid">
+        <div class="hobby-card">
+          <div class="hobby-icon">📸</div>
+          <h3>Photography</h3>
+          <p>Enjoy capturing moments and landscapes during my travels.</p>
+        </div>
+        <div class="hobby-card">
+          <div class="hobby-icon">🏏</div>
+          <h3>Cricket</h3>
+          <p>Love playing cricket with friends and following the sport.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="social-media" class="section social-media-section">
+    <div class="container">
+      <h2>Connect with Me</h2>
+      <div class="social-links">
+        <a href="https://linkedin.com" class="social-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact-section">
+    <div class="container">
+      <h2>Contact</h2>
+      <form class="contact-form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="thank-you.html">
+        <input type="hidden" name="form-name" value="contact" />
+        <input type="text" name="bot-field" style="display: none;" />
+        <div class="form-group">
+          <input type="text" name="name" placeholder="Your Name" required />
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" placeholder="Your Email" required />
+        </div>
+        <div class="form-group">
+          <textarea name="message" placeholder="Your Message" required></textarea>
+        </div>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2025 Lathif. Designed with ❤️</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
